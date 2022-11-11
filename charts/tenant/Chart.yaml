@@ -4,7 +4,7 @@ description: Tenant Configuration
 type: application
 maintainers:
   - email: ibacalu@icloud.com
-    name: Iulian Bacalu
+    name: ibacalu
     url: https://www.linkedin.com/in/ibacalu
 version: 1.0.0
 appVersion: 1.16.0
