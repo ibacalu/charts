@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  tenant:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-11-11T18:33:00.603196346Z"
+    description: Tenant Configuration
+    digest: 4e12f3431e2416939311ec43c78d2a8c91310f1054c81377a0b16ef490a6dc65
+    maintainers:
+    - email: ibacalu@icloud.com
+      name: ibacalu
+      url: https://www.linkedin.com/in/ibacalu
+    name: tenant
+    type: application
+    urls:
+    - https://github.com/ibacalu/charts/releases/download/tenant-1.0.1/tenant-1.0.1.tgz
+    version: 1.0.1
+generated: "2022-11-11T18:33:00.603204246Z"
