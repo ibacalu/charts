@@ -5,6 +5,10 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "secret.name" -}}
+{{- printf "%s-%s" (include "tenant.fullname" .) "manifest-secret"  | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -31,9 +35,21 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Annotations
+*/}}
+{{- define "common.annotations" -}}
+  {{- with .Values.annotations }}
+    {{- toYaml . }}
+  {{- end }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
-{{- define "tenant.labels" -}}
+{{- define "common.labels" -}}
+  {{- with .Values.labels }}
+    {{- toYaml . }}
+  {{- end }}
 helm.sh/chart: {{ include "tenant.chart" . }}
 {{ include "tenant.selectorLabels" . }}
 {{- if .Chart.AppVersion }}

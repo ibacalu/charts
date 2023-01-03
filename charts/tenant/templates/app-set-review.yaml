@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: {{ .Values.app.name }}-review
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+  - pullRequest:
+      github:
+        # GitHub organization.
+        owner: {{ .Values.app.owner }}
+        # Github repository
+        repo: {{ .Values.app.url }}
+        # For GitHub Enterprise. (optional)
+        api: https://api.github.com/
+        # Reference to a Secret containing an access token. (optional)
+        # tokenRef:
+        #   secretName: {{ include "secret.name" . }}
+        #   key: token
+        # Labels is used to filter the PRs that you want to target. (optional)
+        labels:
+          - {{ default "preview" .Values.app.preview.labels }}
+  template:
+    metadata:
+      name: '{{ .Values.app.name }}-{{"{{"}} .branch }}-{{"{{"}} .number }}'
+      labels:
+        {{- include "common.labels" . | nindent 8 }}
+    spec:
+      source:
+        repoURL: {{ .Values.app.url }}
+        targetRevision: '{{"{{"}} .head_sha }}'
+        path: helm-guestbook
+        helm:
+          parameters:
+          - name: "image.tag"
+            value: 'pull-{{"{{"}} .head_sha }}'
+        kustomize:
+          # Supported kustomize transformers. https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
+          namePrefix: review-
+          nameSuffix: -some-suffix
+          commonLabels:
+            stage: review
+          commonAnnotations:
+            beep: boop
+          images:
+            - my-app=gcr.io/my-repo/my-app:{{.head_sha}}
+      project: {{ .Values.project }}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{"{{"}} .branch }}-{{"{{"}} .number }}'
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
